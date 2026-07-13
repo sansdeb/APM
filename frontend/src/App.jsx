@@ -47,13 +47,10 @@ function RoleRoute({ allowedRole, children }) {
 export default function App() {
   return (
     <BrowserRouter>
-    <Routes>
-  <Route path="/" element={<Navigate to="/login" replace />} />  {/* ADD THIS */}
-  <Route path="/login"    element={<Login />} />
-  <Route path="/register" element={<Register />} />
-  {/* ... rest of your routes unchanged */}
-</Routes>
       <Routes>
+        {/* Root redirect — send "/" to the login page */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         {/* Public routes */}
         <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
