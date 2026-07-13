@@ -1,13 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-
-const api = axios.create({ baseURL: '' });
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers['Authorization'] = `Bearer ${token}`;
-  return config;
-});
+import api from '../../api/axios';
+// Shared axios instance (baseURL + JWT interceptor) — see src/api/axios.js
 
 // ─── STYLES ───────────────────────────────────────────────────
 const S = {
@@ -67,7 +61,7 @@ function DocCard({ doc }) {
           onClick={async () => {
             try {
               const token = localStorage.getItem('token');
-              const res   = await fetch(`/api/assets/documents/${doc.id}/view`, { headers: { Authorization: `Bearer ${token}` } });
+              const res   = await fetch(`${api.defaults.baseURL}/api/assets/documents/${doc.id}/view`, { headers: { Authorization: `Bearer ${token}` } });
               if (!res.ok) throw new Error('Failed to load file');
               const blob  = await res.blob();
               const url   = URL.createObjectURL(blob);

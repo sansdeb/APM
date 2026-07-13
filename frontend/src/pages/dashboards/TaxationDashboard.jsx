@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axios';
 import StatusHistoryModal from '../components/StatusHistoryModal';
 
 function getUser() {
@@ -11,12 +11,7 @@ function getUser() {
   };
 }
 
-const api = axios.create({ baseURL: '' });
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers['Authorization'] = `Bearer ${token}`;
-  return config;
-});
+// Shared axios instance (baseURL + JWT interceptor) — see src/api/axios.js
 
 const STATUS_STYLES = {
   'InProgress Taxation'        : { background: '#e0f2fe', color: '#0369a1', border: '1px solid #bae6fd' },

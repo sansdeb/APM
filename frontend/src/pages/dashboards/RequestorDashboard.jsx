@@ -18,7 +18,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axios';
 import AssetForm from '../components/AssetForm';
 
 // ─── Read logged-in user from localStorage ────────────────────
@@ -30,14 +30,7 @@ function getUser() {
   };
 }
 
-// ─── Axios instance with JWT header ──────────────────────────
-// Reads token from localStorage and attaches to every request
-const api = axios.create({ baseURL: '' });
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers['Authorization'] = `Bearer ${token}`;
-  return config;
-});
+// Shared axios instance (baseURL + JWT interceptor) — see src/api/axios.js
 
 // ─── Status badge colours ─────────────────────────────────────
 const STATUS_STYLES = {

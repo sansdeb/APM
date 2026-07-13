@@ -4,7 +4,7 @@
 
 
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 
 const styles = {
@@ -201,7 +201,7 @@ export default function Login() {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('/api/auth/login', form);
+      const res = await api.post('/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role',  res.data.user.role);
       localStorage.setItem('name',       res.data.user.name);     

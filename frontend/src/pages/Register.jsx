@@ -4,7 +4,7 @@
 // Each role redirects to its own dashboard after registration
 
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 
 // ─── Role definitions ────────────────────────────────────────────────────────
@@ -279,7 +279,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/auth/register', {
+      const res = await api.post('/api/auth/register', {
         name:       form.name,
         employeeId: form.employeeId,
         email:      form.email,
