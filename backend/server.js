@@ -19,7 +19,7 @@ const lookupRoutes = require('./routes/lookupRoutes');
 const assetRoutes  = require('./routes/assetRoutes');
 
 const app  = express();
-app.set('trust proxy', 1);  // add this right after const app = express();
+app.set('trust proxy', 1);  
 const PORT = process.env.PORT || 8000;
 
 // ── Part 4C: security headers (must be early) ───────────────────
@@ -27,9 +27,28 @@ app.use(helmet());
 
 // ── Part 4B: CORS locked to known frontends ─────────────────────
 const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',')
+  ? process.env.CLIENT_URL.split(',').map(o => o.trim())
   : ['http://localhost:5173'];
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+const corsOptions = {
+  origin: function(origin, callback) {
+    // allow requests with no origin (curl, mobile apps, Render health checks)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
+// CORS must also handle OPTIONS preflight requests explicitly
+// ('/{*splat}' is Express 5 syntax for the '*' catch-all)
+app.options('/{*splat}', cors(corsOptions));
 
 // ── Part 4E: body size cap ──────────────────────────────────────
 app.use(express.json({ limit: '2mb' }));
