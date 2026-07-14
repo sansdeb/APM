@@ -5,6 +5,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import api from '../api';
+
 
 // ── Amount in words ────────────────────────────────────────────
 const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine',
@@ -64,18 +66,16 @@ export default function TaxInvoicePrint() {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState('');
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetch(`/api/taxation/${id}/invoice`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => r.json())
+ useEffect(() => {
+    api.get(`/taxation/${id}/invoice`)
       .then(res => {
-        if (res.message && !res.request) { setError(res.message); }
-        else { setData(res.request); }
+        setData(res.data.request);
         setLoading(false);
       })
-      .catch(() => { setError('Failed to load invoice.'); setLoading(false); });
+      .catch(err => {
+        setError(err.response?.data?.message || 'Failed to load invoice.');
+        setLoading(false);
+      });
   }, [id]);
 
   if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Loading invoice...</div>;

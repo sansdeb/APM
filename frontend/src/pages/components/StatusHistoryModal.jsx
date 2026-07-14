@@ -3,6 +3,8 @@
 // Fetches GET /api/taxation/:id/status-history and renders a timeline.
 
 import { useEffect, useState } from 'react';
+import api from '../../api';
+
 
 const STATUS_COLORS = {
   'Taxation Approved':        { bg: '#f0fdf4', border: '#bbf7d0', text: '#15803d' },
@@ -47,14 +49,10 @@ export default function StatusHistoryModal({ requestId, requestNo, onClose }) {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState('');
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetch(`/api/taxation/${requestId}/status-history`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => r.json())
-      .then(data => {
-        setHistory(data.history || []);
+ useEffect(() => {
+    api.get(`/taxation/${requestId}/status-history`)
+      .then(res => {
+        setHistory(res.data.history || []);
         setLoading(false);
       })
       .catch(() => {
