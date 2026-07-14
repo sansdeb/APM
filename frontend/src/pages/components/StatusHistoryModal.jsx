@@ -3,7 +3,7 @@
 // Fetches GET /api/taxation/:id/status-history and renders a timeline.
 
 import { useEffect, useState } from 'react';
-import api from '../../api';
+import api from '../../api/axios';
 
 
 const STATUS_COLORS = {
@@ -50,7 +50,7 @@ export default function StatusHistoryModal({ requestId, requestNo, onClose }) {
   const [error,   setError]   = useState('');
 
  useEffect(() => {
-    api.get(`/taxation/${requestId}/status-history`)
+    api.get(`/api/taxation/${requestId}/status-history`)
       .then(res => {
         setHistory(res.data.history || []);
         setLoading(false);
@@ -102,14 +102,14 @@ export default function StatusHistoryModal({ requestId, requestNo, onClose }) {
           {error && (
             <div style={{ color: '#c0392b', fontSize: 13, padding: 16 }}>{error}</div>
           )}
-          {!loading && !error && history.length === 0 && (
+          {!loading && !error && (!history || history.length === 0) && (
             <div style={{ textAlign: 'center', color: '#8a94a8', padding: 32, fontSize: 13 }}>
-              No history found.
+              No history available.
             </div>
           )}
 
           {/* Timeline */}
-          {!loading && history.map((entry, idx) => (
+          {!loading && (history || []).map((entry, idx) => (
             <div key={entry.id} style={{ display: 'flex', gap: 16, marginBottom: 0 }}>
               {/* Left: line + dot */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 24, flexShrink: 0 }}>

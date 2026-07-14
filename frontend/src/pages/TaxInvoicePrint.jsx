@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '../api';
+import api from '../api/axios';
 
 
 // ── Amount in words ────────────────────────────────────────────
@@ -67,7 +67,7 @@ export default function TaxInvoicePrint() {
   const [error,   setError]   = useState('');
 
  useEffect(() => {
-    api.get(`/taxation/${id}/invoice`)
+    api.get(`/api/taxation/${id}/invoice`)
       .then(res => {
         setData(res.data.request);
         setLoading(false);
